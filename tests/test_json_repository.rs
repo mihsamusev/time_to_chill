@@ -1,7 +1,7 @@
-use time_to_chill::{WatchStatus, MovieRepository};
-use std::collections::HashMap;
+use serde::ser::{Serialize, SerializeMap, Serializer};
 use serde_json;
-use serde::ser::{Serialize, Serializer, SerializeMap};
+use std::collections::HashMap;
+use time_to_chill::{self, MovieRepository, WatchStatus};
 
 struct TestMovieRepository {}
 
@@ -10,7 +10,7 @@ impl MovieRepository for TestMovieRepository {
         HashMap::from([
             ("Cowboy Bebop".into(), WatchStatus::NotStarted),
             ("Snatch".into(), WatchStatus::NotStarted),
-            ("Inglorious Bastards".into(), WatchStatus::Finished)
+            ("Inglorious Bastards".into(), WatchStatus::Finished),
         ])
     }
 }
@@ -38,15 +38,15 @@ fn test_serialize_repo() {
         \"Inglorious Bastards\":\"Finished\",\
         \"Snatch\":\"NotStarted\"\
     }";
-    let repo = TestMovieRepository{};
+    let repo = TestMovieRepository {};
     let serialized = serde_json::to_string(&repo).unwrap();
     assert_eq!(original, serialized)
 }
 
 #[test]
 fn test_pick_not_started_movie() {
-    let repo = TestMovieRepository{};
+    let repo = TestMovieRepository {};
     let movies = repo.get_movies();
-    //let movie = pick_unwatched(&movies);
-    // assert movie name one of "(Cowboy Bebop, Snatch)"
+    let movie = time_to_chill::pick_unwatched(&movies);
+    assert!(movie == Some("Cowboy Bebop".into()) || movie == Some("Snatch".into()))
 }
