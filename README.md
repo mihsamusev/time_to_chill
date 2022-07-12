@@ -16,3 +16,10 @@ time_to_chill show history
 Movie (name) Status (finished, unfinished, not started)
 On control C - log latest item as unwatched
 On startup check whether we finished latest movie, and if no, when did we stop
+
+Movie storage requirements:
+- Filter by movie statuses (most important prob)
+- Update movie status (often)
+- Serialize or deserialzei 
+- Add movie
+- Print list of movies
