@@ -1,14 +1,15 @@
 use rand::seq::SliceRandom;
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
+use std::{collections::HashMap, fs::File};
 
-#[derive(Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Serialize, Deserialize, PartialEq, Eq, Debug, Clone)]
 pub enum WatchStatus {
     NotStarted,
     Finished,
-    Interrupted(String),
+    Unfinished{comment: String}
 }
 
+#[derive(Serialize, Deserialize, PartialEq, Eq, Debug)]
 pub struct Movie {
     pub name: String,
     pub status: WatchStatus,
@@ -19,15 +20,21 @@ pub trait MovieRepository {
 }
 
 pub struct JsonMovieRepository {
-    _movies: HashMap<String, WatchStatus>, // Vec<Movie, how to make sure its unique?
+    movies: HashMap<String, WatchStatus>, // Vec<Movie, how to make sure its unique?
+}
+
+impl MovieRepository for JsonMovieRepository {
+    fn get_movies(&self) -> HashMap<String, WatchStatus> {
+        self.movies.clone()
+    }
 }
 
 impl JsonMovieRepository {
     pub fn new(filename: &str) -> Self {
-        println!("GONNAREAD: {}", filename);
-        Self {
-            _movies: HashMap::new(),
-        }
+        let file = File::open(filename).expect("Could not read");
+        let json: Vec<Movie> = serde_json::from_reader(file).unwrap();
+        let movies: HashMap<String, WatchStatus>= json.into_iter().map(|m| (m.name, m.status)).collect();
+        Self {movies}
     }
 }
 

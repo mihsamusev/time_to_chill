@@ -1,5 +1,5 @@
-{
-    "Cowboy Bebop": "NotStarted",
-    "Snatch": "Interrupted",
-    "Inglorious Bastards": "Finished"
-}
+[
+    {"name": "Cowboy Bebop", "status": "NotStarted"},
+    {"name": "Snatch", "status": "NotStarted"},
+    {"name": "Inglorious Bastards", "status": "Finished"}
+]
