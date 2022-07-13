@@ -1,31 +1,44 @@
-use std::{collections::HashMap, env};
-use time_to_chill::{JsonMovieRepository, WatchStatus, pick_unwatched, MovieRepository};
+use time_to_chill::{JsonMovieRepository, pick_unwatched, MovieRepository};
+use clap::{Parser, ArgEnum};
 
-fn parse_args() -> Vec<String> {
-    let args: Vec<String> = env::args().collect();
-    args
+#[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ArgEnum)]
+enum MovieSource {
+    GoogleKeep,
+    Json,
+}
+
+/// Random movie selector for Netflix & Chill evening
+#[derive(Parser)]
+#[clap(author, version, about, long_about=None)]
+struct Args {
+    /// Path to the movie collection '.json' file
+    #[clap(long, value_parser, default_value_t = String::from("./movies.json"))]
+    movie_file: String,
+    
+    /// Whether to include unfinished movies into the selection pool
+    #[clap(long, action, default_value_t = true)]
+    include_unfinished: bool,
+    
+    /// Where to fetch movie collection from
+    #[clap(arg_enum, long, default_value_t = MovieSource::Json)]
+    movie_source: MovieSource
 }
 
 fn main() {
-    let args = parse_args();
-    let filename = &args[1];
-    let repo = JsonMovieRepository::new(filename);
+    let args = Args::parse();
 
-    // enter UI loop
-    // greetings and navigation
+    // match args.movie_source {
+    //     MovieSource::GoogleKeep => println!("Gonna try to sync GoogleKeep with local movie file"),
+    //     MovieSource::Json => println!("Gonna try from local movie file")
+    // }
+    let repo = JsonMovieRepository::new(&args.movie_file);
 
-    // modes (all, unwatched only, unwatched or unfinished)
-    // include unfinished?
+    println!("Let me sellect something for you from the list...");
 
-    // rewatch?
-
-    // You have following unfinished movies
-    // Movie / reason, would you like to randomly choose among then?
-
-    // Youre chilln to:
     let movie = pick_unwatched(&repo.get_movies());
     match movie {
-        None => println!("We're watching nothing bae"),
-        Some(m) => println!("we're watchng {} bae", m)
+        None => println!("🙄 Im afraid there is nothing to watch bae, 😏 but we could go straight to chilling..."),
+        Some(m) => println!("Ooo weee 😏, we're watchng <{}> bae 🤤, so you better get comfortable!", m)
     };
+    println!("Have fun!")
 }

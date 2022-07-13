@@ -46,8 +46,5 @@ pub fn pick_unwatched(movies: &HashMap<String, WatchStatus>) -> Option<String> {
         .collect();
 
     let movie_name = unwatched_names.choose(&mut rand::thread_rng());
-    match movie_name {
-        None => None,
-        Some(name) => Some(String::from(name)),
-    }
+    movie_name.map(String::from)
 }

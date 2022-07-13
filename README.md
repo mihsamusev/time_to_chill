@@ -1,25 +1,11 @@
 # time_to_chill
-Minimal random movie selector TUI
+Minimal random movie selector TUI for your chill evening
 
 # getting started
-```
-Clone this repo
-```
+Clone this repo, then:
 ```bash
-time_to_chill start
-time_to_chill source keep
-time_to_chill show list
-time_to_chill show history
+cargo run -- --movie-file tests/test_movies.json
+# or if you have the exe copied
+time_to_chill --movie-file tests/test_movies.json
 ```
 
-# notes
-Movie (name) Status (finished, unfinished, not started)
-On control C - log latest item as unwatched
-On startup check whether we finished latest movie, and if no, when did we stop
-
-Movie storage requirements:
-- Filter by movie statuses (most important prob)
-- Update movie status (often)
-- Serialize or deserialzei 
-- Add movie
-- Print list of movies
